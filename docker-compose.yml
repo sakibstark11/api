@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  database:
+    container_name: Database
+    image: postgres:14.0
+    platform: linux/amd64
+    ports:
+      - 5432:${DB_PORT}
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
