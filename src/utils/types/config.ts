@@ -1,6 +1,6 @@
 import { Logger } from 'pino';
 
-interface Config {
+export default interface Config {
     port: number;
     logger: Logger;
     database: {
@@ -11,5 +11,3 @@ interface Config {
         password: string;
     };
 }
-
-export default Config;

@@ -23,8 +23,8 @@ const config: Config = {
 
 const dataSource = database(config);
 
-const repository: RepositoryMap = {
+const repositories: RepositoryMap = {
     user: dataSource.getRepository(UserModel)
 };
 
-App(config, dataSource, repository);
+App(config, dataSource, repositories);

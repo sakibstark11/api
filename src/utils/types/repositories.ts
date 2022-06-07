@@ -1,8 +1,6 @@
 import { Repository } from 'typeorm';
 import UserModel from '../../models/user';
 
-interface RepositoryMap {
+export default interface RepositoryMap {
     user: Repository<UserModel>;
 }
-
-export default RepositoryMap;

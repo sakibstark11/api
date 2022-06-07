@@ -1,4 +1,4 @@
-export default class NewUser {
+export default interface NewUser {
     email: string;
     password: string;
 }

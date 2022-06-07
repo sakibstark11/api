@@ -11,9 +11,8 @@ export default (repository: Repository<UserModel>, logger: Logger) => {
     const controller = userController(repository, logger);
     router.post('/', async (req: Request, res: Response) => {
         const { email, password } = req.body as NewUser;
-        await controller.createUser({ email, password });
-        return res.json({ msg: "hello" });
+        const { status, payload } = await controller.createUser({ email, password });
+        return res.status(status).json(payload);
     });
     return router;
-
 };
