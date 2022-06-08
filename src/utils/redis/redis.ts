@@ -1,6 +1,3 @@
 import { createClient } from 'redis';
 
-export default () => {
-    const client = createClient();
-    return client;
-};
+export default () => createClient();

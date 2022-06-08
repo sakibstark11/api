@@ -4,12 +4,12 @@ import UserModel from '../models/user';
 import UserService from '../services/user';
 import EnteredUser from '../utils/types/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
-import { BaseError, Conflict409, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
+import { BaseHttpError, Conflict409, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
 import unauthorizedUser from '../utils/types/newUser';
 
 export default (service: any, logger: Logger) => {
     return {
-        createUser: async ({ email, password }: unauthorizedUser): Promise<HttpResponse<BaseError | EnteredUser>> => {
+        createUser: async ({ email, password }: unauthorizedUser): Promise<HttpResponse<BaseHttpError | EnteredUser>> => {
             const user = new UserModel();
             user.email = email;
             user.password = password;
@@ -27,7 +27,7 @@ export default (service: any, logger: Logger) => {
 
 
             } catch (error) {
-                if (error instanceof BaseError) {
+                if (error instanceof BaseHttpError) {
                     logger.error({ error, email });
                     return error.removeStackTrace();
                 }

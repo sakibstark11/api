@@ -4,9 +4,10 @@ import App from './src/app';
 import Config from './src/utils/types/config';
 import DataSource from './src/utils/database/database';
 import RedisSource from './src/utils/redis/redis';
-import TokenService from "./src/services/token";
 import UserModel from './src/models/user';
 import UserService from './src/services/user';
+import RedisService from './src/services/redis';
+import TokenService from "./src/services/token";
 import ServiceMap from './src/utils/types/services';
 
 dotenv.config({ path: `${__dirname}/.env` });
@@ -24,26 +25,28 @@ const config: Config = {
     token: {
         access: {
             secret: process.env.ACCESS_TOKEN_SECRET as string,
-            ttl: '2m'
+            ttl: Number(process.env.ACCESS_TOKEN_TTL)
         },
         refresh: {
             secret: process.env.REFRESH_TOKEN_SECRET as string,
-            ttl: '2h'
+            ttl: Number(process.env.REFRESH_TOKEN_TTL)
         }
     }
 };
 
 const dataSource = DataSource(config);
 const redisSource = RedisSource();
-const tokenService = TokenService(config);
+const tokenService = TokenService(config, logger);
 
 const userService = UserService(dataSource.getRepository(UserModel), logger);
+const redisService = RedisService(redisSource, config.token.refresh.ttl, logger);
 
 const services: ServiceMap = {
     user: userService,
-    redis: redisSource,
+    redis: redisService,
     token: tokenService
 };
+
 
 
 dataSource.initialize().then(() => {
@@ -51,8 +54,17 @@ dataSource.initialize().then(() => {
     redisSource.connect().then(() => {
         logger.info('redis initialized');
         App(config, services);
+    }).catch((error) => {
+        logger.error(error, "failed to initialize redis");
+        redisSource.quit().then(() => {
+            logger.warn("closed redis connection; will exit");
+            process.exit(1);
+        }).catch((error) => {
+            logger.error(error, "failed to close redis connection; will exit");
+            process.exit(1);
+        });
+    }).catch((error) => {
+        logger.error(error, 'failed to initialize database; will exit');
+        process.exit(1);
     });
-}).catch((error) => {
-    logger.error(error, 'something went wrong');
-    process.exit(1);
 });

@@ -13,11 +13,11 @@ export default interface Config {
     token: {
         access: {
             secret: string,
-            ttl: string;
+            ttl: number;
         };
         refresh: {
             secret: string,
-            ttl: string;
+            ttl: number;
         };
     };
 }
