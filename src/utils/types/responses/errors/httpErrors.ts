@@ -39,3 +39,9 @@ export class Forbidden403 extends BaseHttpError {
         super(message, 403);
     }
 }
+
+export class Unauthorized401 extends BaseHttpError {
+    constructor(message: string) {
+        super(message, 401);
+    }
+}

@@ -20,7 +20,7 @@ export default (redisService: any, userService: any, tokenService: any, logger: 
                 const accessToken = tokenService.createAccessToken(user);
                 const refreshToken = tokenService.createRefreshToken(user);
 
-                
+                await redisService.storeRefreshToken(user.id, refreshToken);
 
                 return { status: 200, payload: { accessToken, refreshToken } };
             } catch (error) {
@@ -31,6 +31,19 @@ export default (redisService: any, userService: any, tokenService: any, logger: 
                 return new Server500('something went wrong').removeStackTrace();
             }
 
+        },
+        logoutUser: async (id: string): Promise<HttpResponse<BaseHttpError | string>> => {
+            try {
+                await redisService.removeRefreshToken(id);
+
+                return { status: 200, payload: 'logged out' };
+            } catch (error) {
+                if (error instanceof BaseHttpError) {
+                    logger.error({ error, id });
+                    return error.removeStackTrace();
+                }
+                return new Server500('something went wrong').removeStackTrace();
+            }
         }
     };
 };

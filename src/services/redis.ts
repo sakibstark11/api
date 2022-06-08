@@ -1,24 +1,11 @@
 import { Logger } from 'pino';
 
 export default (repository: any, refreshTokenTTL: number, logger: Logger) => ({
-    storeRefreshToken: async (key: string, token: string) => {
-        try {
-            await repository.set(key, token, {
-                EX: refreshTokenTTL
-            });
-            return true;
-        } catch (error) {
-            logger.error(error, `failed to store refresh token for ${key}`);
-            return null;
-        }
-    },
+    storeRefreshToken: (key: string, token: string) => repository.set(key, token, {
+        EX: refreshTokenTTL
+    }),
 
-    fetchRefreshToken: async (key: string) => {
-        try {
-            return repository.get(key);
-        } catch (error) {
-            logger.error(error, `failed to fetch refresh token for ${key}`);
-            return null;
-        }
-    }
+    fetchRefreshToken: (key: string) => repository.get(key),
+
+    removeRefreshToken: (key: string) => repository.del(key)
 });

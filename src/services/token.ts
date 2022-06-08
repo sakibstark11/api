@@ -21,6 +21,7 @@ export default ({ token: { access, refresh } }: Config, logger: Logger) => ({
             const decode = verify(token, access.secret);
             return decode;
         } catch (error) {
+            logger.error(error, 'failed to verify access token');
             return null;
         }
     },
@@ -30,6 +31,7 @@ export default ({ token: { access, refresh } }: Config, logger: Logger) => ({
             const decoded = verify(token, refresh.secret);
             return decoded;
         } catch (error) {
+            logger.error(error, 'failed to verify refresh token');
             return null;
         }
     },

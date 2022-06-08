@@ -1,9 +1,6 @@
 import { Router, Request, Response } from "express";
 import { Logger } from 'pino';
-import { Repository } from 'typeorm';
 import AuthenticationController from '../controllers/authentication';
-import UserService from '../services/user';
-import UserModel from '../models/user';
 import unauthorizedUser from '../utils/types/newUser';
 
 export default (userService: any
@@ -16,6 +13,11 @@ export default (userService: any
         const { email, password } = req.body as unauthorizedUser;
         const { status, payload } = await controller.loginUser({ email, password });
         return res.status(status).json(payload);
+    });
+
+    router.delete('/', async (req: Request, resp: Response) => {
+        const { status, payload } = await controller.logoutUser(req.headers.id as string);
+        return resp.status(status).json(payload);
     });
     return router;
 };
