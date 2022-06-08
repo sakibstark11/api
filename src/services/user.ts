@@ -3,18 +3,18 @@ import { Logger } from 'pino';
 import { Repository, Tree } from 'typeorm';
 import UserModel from '../models/user';
 import EnteredUser from '../utils/types/enteredUser';
-import NewUser from '../utils/types/newUser';
+import unauthorizedUser from '../utils/types/newUser';
 
 export default (repository: Repository<UserModel>) => ({
-    checkIfExistingUser: async (email: string): Promise<Boolean> => {
+    getUser: async (email: string): Promise<UserModel | null> => {
         const user = await repository.findOneBy({ email });
         if (user) {
-            return true;
+            return user;
         }
-        return false;
+        return null;
     },
 
-    createUser: async ({ email, password: passwordHash }: NewUser): Promise<EnteredUser> => {
+    createUser: async ({ email, password: passwordHash }: unauthorizedUser): Promise<EnteredUser> => {
         const newUser = await repository.save({ email, password: passwordHash });
         const user = { email: newUser.email, id: newUser.id };
         return user;

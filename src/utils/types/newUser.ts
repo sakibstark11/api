@@ -1,4 +1,4 @@
-export default interface NewUser {
+export default interface unauthorizedUser {
     email: string;
     password: string;
 }

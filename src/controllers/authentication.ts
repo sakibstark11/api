@@ -6,25 +6,25 @@ import EnteredUser from '../utils/types/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
 import { BaseError, Conflict409, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
 import unauthorizedUser from '../utils/types/newUser';
+import Token from '../utils/types/token';
 
-export default (service: any, logger: Logger) => {
+export default (redisService: any, userService: any, tokenService: any, logger: Logger) => {
     return {
-        createUser: async ({ email, password }: unauthorizedUser): Promise<HttpResponse<BaseError | EnteredUser>> => {
-            const user = new UserModel();
-            user.email = email;
-            user.password = password;
+        loginUser: async ({ email, password }: unauthorizedUser): Promise<HttpResponse<BaseError | Token>> => {
             try {
-                const existingUser = await service.getUser(email);
-                if (existingUser) {
-                    throw new Conflict409(`user already exists`);
+                const user = await userService.getUser(email);
+                if (!user) {
+                    throw new NotFound404(`user does not exist`);
                 }
-                const createdUser = await service.createUser(user);
-                logger.info({ createdUser }, 'user created');
-                return {
-                    status: 200,
-                    payload: createdUser
-                };
 
+                if (user.password !== password) {
+                    throw new Forbidden403(`email or password incorrect`);
+                }
+
+                const accessToken = await tokenService.createAccessToken(user);
+                const refreshToken = await tokenService.createRefreshToken(user);
+
+                return { status: 200, payload: { accessToken, refreshToken } };
 
             } catch (error) {
                 if (error instanceof BaseError) {
@@ -33,6 +33,7 @@ export default (service: any, logger: Logger) => {
                 }
                 return new Server500('something went wrong').removeStackTrace();
             }
+
         }
     };
 };

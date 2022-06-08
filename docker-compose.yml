@@ -10,3 +10,9 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+  redis:
+    container_name: Redis
+    image: redis:7.0.0
+    platform: linux/amd64
+    ports:
+      - 6379:${REDIS_PORT}

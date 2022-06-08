@@ -3,9 +3,11 @@ import logger from './src/loggers/logger';
 import App from './src/app';
 import Config from './src/utils/types/config';
 import database from './src/utils/database/database';
+import redis from './src/utils/redis/redis';
 import UserModel from './src/models/user';
-import RepositoryMap from './src/utils/types/repositories';
-
+import ServiceMap from './src/utils/types/services';
+import tokenService from "./src/services/token";
+import UserService from './src/services/user';
 
 dotenv.config({ path: `${__dirname}/.env` });
 
@@ -18,13 +20,36 @@ const config: Config = {
         user: process.env.DB_USER as string,
         name: process.env.DB_NAME as string,
         password: process.env.DB_PASSWORD as string,
+    },
+    token: {
+        access: {
+            secret: process.env.ACCESS_TOKEN_SECRET as string,
+            ttl: '2m'
+        },
+        refresh: {
+            secret: process.env.REFRESH_TOKEN_SECRET as string,
+            ttl: '2h'
+        }
     }
 };
 
 const dataSource = database(config);
+const redisSource = redis();
+const tokenSource = tokenService(config);
 
-const repositories: RepositoryMap = {
-    user: dataSource.getRepository(UserModel)
+const repositories: ServiceMap = {
+    user: UserService(dataSource.getRepository(UserModel)),
+    redis: redisSource,
+    token: tokenSource
 };
 
-App(config, dataSource, repositories);
+
+dataSource.initialize().then(() => {
+    logger.info('database initialized');
+    redisSource.connect().then(() => {
+        logger.info('redis initialized');
+        App(config, repositories);
+    });
+}).catch((error) => {
+    logger.error(error);
+});

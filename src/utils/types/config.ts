@@ -10,4 +10,14 @@ export default interface Config {
         name: string;
         password: string;
     };
+    token: {
+        access: {
+            secret: string,
+            ttl: string;
+        };
+        refresh: {
+            secret: string,
+            ttl: string;
+        };
+    };
 }
