@@ -1,11 +1,10 @@
-import { createSecureServer } from 'http2';
 import { Logger } from 'pino';
-import { Repository, Tree } from 'typeorm';
+import { Repository } from 'typeorm';
 import UserModel from '../models/user';
 import EnteredUser from '../utils/types/enteredUser';
 import unauthorizedUser from '../utils/types/newUser';
 
-export default (repository: Repository<UserModel>) => ({
+export default (repository: Repository<UserModel>, logger: Logger) => ({
     getUser: async (email: string): Promise<UserModel | null> => {
         const user = await repository.findOneBy({ email });
         if (user) {

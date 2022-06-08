@@ -1,5 +1,6 @@
-import { Repository } from 'typeorm';
-import UserModel from '../../models/user';
+import token from '../../services/token';
+import redis from '../redis/redis';
+import user from '../../services/user';
 
 export default interface ServiceMap {
     user: any;

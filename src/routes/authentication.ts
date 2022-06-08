@@ -12,7 +12,6 @@ export default (userService: any
     const router = Router();
     const controller = AuthenticationController(redisService, userService, tokenService, logger);
 
-
     router.post('/', async (req: Request, res: Response) => {
         const { email, password } = req.body as unauthorizedUser;
         const { status, payload } = await controller.loginUser({ email, password });
