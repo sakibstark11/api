@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import logger from './src/loggers/logger';
 import App from './src/app';
-import Config from './src/utils/types/config';
+import { Config } from './src/utils/types/config';
 import DataSource from './src/utils/database/database';
 import RedisSource from './src/utils/redis/redis';
 import UserModel from './src/models/user';
@@ -36,18 +36,16 @@ const config: Config = {
 
 const dataSource = DataSource(config);
 const redisSource = RedisSource();
-const tokenService = TokenService(config, logger);
 
-const userService = UserService(dataSource.getRepository(UserModel), logger);
-const redisService = RedisService(redisSource, config.token.refresh.ttl, logger);
+const tokenService = new TokenService(config.token.access, config.token.refresh, logger);
+const userService = new UserService(dataSource.getRepository(UserModel), logger);
+const redisService = new RedisService(redisSource, config.token.refresh.ttl, logger);
 
 const services: ServiceMap = {
     user: userService,
     redis: redisService,
     token: tokenService
 };
-
-
 
 dataSource.initialize().then(() => {
     logger.info('database initialized');

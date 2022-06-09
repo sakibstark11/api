@@ -1,4 +1,4 @@
-export default interface unauthorizedUser {
+export type UnauthorizedUser = {
     email: string;
     password: string;
-}
+};

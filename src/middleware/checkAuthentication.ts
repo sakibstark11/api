@@ -13,6 +13,9 @@ export default (redisService: any, tokenService: any, logger: Logger) => async (
         const existingRefreshToken = await redisService.fetchRefreshToken(decodedAccessToken.id);
 
         if (existingRefreshToken !== refresh_token) { throw new Unauthorized401('access denied'); }
+
+        request.headers.id = decodedAccessToken.id;
+
         logger.info({ id: decodedAccessToken.id }, 'authenticated');
 
         return next();

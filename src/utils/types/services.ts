@@ -1,9 +1,9 @@
-import token from '../../services/token';
-import redis from '../redis/redis';
-import user from '../../services/user';
+import TokenService from '../../services/token';
+import RedisService from '../../services/redis';
+import UserService from '../../services/user';
 
 export default interface ServiceMap {
-    user: any;
-    redis: any;
-    token: any;
+    user: UserService;
+    redis: RedisService;
+    token: TokenService;
 }

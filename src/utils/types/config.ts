@@ -1,6 +1,7 @@
 import { Logger } from 'pino';
+import { TokenConfig } from './token';
 
-export default interface Config {
+export type Config = {
     port: number;
     logger: Logger;
     database: {
@@ -11,13 +12,7 @@ export default interface Config {
         password: string;
     };
     token: {
-        access: {
-            secret: string,
-            ttl: number;
-        };
-        refresh: {
-            secret: string,
-            ttl: number;
-        };
+        access: TokenConfig;
+        refresh: TokenConfig;
     };
-}
+};

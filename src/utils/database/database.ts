@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 
 import UserModel from "../../models/user";
-import Config from '../types/config';
+import { Config } from '../types/config';
 
 
 export default ({ database: {

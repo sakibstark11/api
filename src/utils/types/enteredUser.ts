@@ -1,4 +1,4 @@
-export default interface EnteredUser {
+export type EnteredUser = {
     id: string;
     email: string;
-}
+};

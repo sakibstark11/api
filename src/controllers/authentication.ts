@@ -1,12 +1,12 @@
 import { Logger } from 'pino';
 import HttpResponse from '../utils/types/responses/base';
 import { BaseHttpError, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
-import unauthorizedUser from '../utils/types/newUser';
-import Token from '../utils/types/token';
+import { UnauthorizedUser } from '../utils/types/newUser';
+import { TokenHeader } from '../utils/types/token';
 
 export default (redisService: any, userService: any, tokenService: any, logger: Logger) => {
     return {
-        loginUser: async ({ email, password }: unauthorizedUser): Promise<HttpResponse<BaseHttpError | Token>> => {
+        loginUser: async ({ email, password }: UnauthorizedUser): Promise<HttpResponse<BaseHttpError | TokenHeader>> => {
             try {
                 const user = await userService.getUser(email);
                 if (!user) {

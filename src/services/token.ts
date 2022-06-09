@@ -1,38 +1,56 @@
 import { sign, verify } from "jsonwebtoken";
-import EnteredUser from "../utils/types/enteredUser";
-import Config from '../utils/types/config';
+import { EnteredUser } from "../utils/types/enteredUser";
+
+
+import { TokenConfig } from '../utils/types/token';
 import { Logger } from 'pino';
 
-export default ({ token: { access, refresh } }: Config, logger: Logger) => ({
-    createAccessToken: (
-        { id, email }: EnteredUser
-    ) => sign({
-        id, email
-    }, access.secret, { expiresIn: access.ttl }),
 
-    createRefreshToken: (
-        { id, email }: EnteredUser
-    ) => sign({
-        id, email
-    }, refresh.secret, { expiresIn: refresh.ttl }),
+export default class TokenService {
+    private accessToken: TokenConfig;
+    private refreshToken: TokenConfig;
+    private logger: Logger;
 
-    decodeAccessToken: (token: string) => {
+    constructor(accessToken: TokenConfig, refreshToken: TokenConfig, logger: Logger) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.logger = logger;
+    }
+
+    createRefreshToken(
+        { id, email }: EnteredUser
+    ) {
+        return sign({
+            id, email
+        }, this.refreshToken.secret, { expiresIn: this.refreshToken.ttl });
+
+    }
+
+    createAccessToken(
+        { id, email }: EnteredUser
+    ) {
+        return sign({
+            id, email
+        }, this.accessToken.secret, { expiresIn: this.accessToken.ttl });
+    }
+
+    decodeAccessToken(token: string) {
         try {
-            const decode = verify(token, access.secret);
+            const decode = verify(token, this.accessToken.secret);
             return decode;
         } catch (error) {
-            logger.error(error, 'failed to verify access token');
+            this.logger.error(error, 'failed to verify access token');
             return null;
         }
-    },
+    }
 
-    decodeRefreshToken: (token: string) => {
+    decodeRefreshToken(token: string) {
         try {
-            const decoded = verify(token, refresh.secret);
+            const decoded = verify(token, this.refreshToken.secret);
             return decoded;
         } catch (error) {
-            logger.error(error, 'failed to verify refresh token');
+            this.logger.error(error, 'failed to verify refresh token');
             return null;
         }
-    },
-});
+    }
+}

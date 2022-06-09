@@ -1,15 +1,14 @@
 import { Logger } from 'pino';
-import { Repository } from 'typeorm';
 import UserModel from '../models/user';
 import UserService from '../services/user';
-import EnteredUser from '../utils/types/enteredUser';
+import { EnteredUser } from '../utils/types/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
-import { BaseHttpError, Conflict409, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
-import unauthorizedUser from '../utils/types/newUser';
+import { BaseHttpError, Conflict409, Server500 } from '../utils/types/responses/errors/httpErrors';
+import { UnauthorizedUser } from '../utils/types/newUser';
 
-export default (service: any, logger: Logger) => {
+export default (service: UserService, logger: Logger) => {
     return {
-        createUser: async ({ email, password }: unauthorizedUser): Promise<HttpResponse<BaseHttpError | EnteredUser>> => {
+        createUser: async ({ email, password }: UnauthorizedUser): Promise<HttpResponse<BaseHttpError | EnteredUser>> => {
             const user = new UserModel();
             user.email = email;
             user.password = password;
