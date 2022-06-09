@@ -2,6 +2,8 @@ import dotenv from "dotenv";
 import logger from './src/loggers/logger';
 import App from './src/app';
 import { Config } from './src/utils/types/config';
+import AuthenticationMiddleware from './src/middleware/checkAuthentication';
+import { MiddlewareMap } from './src/utils/types/middlewares';
 import DataSource from './src/utils/database/database';
 import RedisSource from './src/utils/redis/redis';
 import UserModel from './src/models/user';
@@ -47,11 +49,15 @@ const services: ServiceMap = {
     token: tokenService
 };
 
+const middlewares: MiddlewareMap = {
+    authentication: AuthenticationMiddleware(redisService, tokenService, logger)
+};
+
 dataSource.initialize().then(() => {
     logger.info('database initialized');
     redisSource.connect().then(() => {
         logger.info('redis initialized');
-        App(config, services);
+        App(config, services, middlewares);
     }).catch((error) => {
         logger.error(error, "failed to initialize redis");
         redisSource.quit().then(() => {

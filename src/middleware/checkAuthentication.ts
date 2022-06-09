@@ -1,12 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 import { Logger } from 'pino';
+import RedisService from '../services/redis';
+import TokenService from '../services/token';
+import { EnteredUser } from '../utils/types/enteredUser';
 import { BaseHttpError, Server500, Unauthorized401 } from '../utils/types/responses/errors/httpErrors';
+import { TokenRequestHeader } from '../utils/types/token';
 
-export default (redisService: any, tokenService: any, logger: Logger) => async (request: Request, response: Response, next: NextFunction) => {
+export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (request: Request & TokenRequestHeader, response: Response, next: NextFunction) => {
     const { headers: { access_token, refresh_token } } = request;
     try {
-        const decodedAccessToken = await tokenService.decodeAccessToken(access_token);
-        const decodedRefreshToken = await tokenService.decodeRefreshToken(refresh_token);
+        const decodedAccessToken = tokenService.decodeAccessToken(access_token) as EnteredUser;
+        const decodedRefreshToken = tokenService.decodeRefreshToken(refresh_token) as EnteredUser;
 
         if (decodedAccessToken === null || decodedRefreshToken === null) { throw new Unauthorized401('access denied'); }
 
