@@ -1,15 +1,15 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from 'pino';
 import AuthenticationController from '../controllers/authentication';
 import RedisService from '../services/redis';
 import TokenService from '../services/token';
 import UserService from '../services/user';
-import { UnauthorizedUser } from '../utils/types/newUser';
+import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 export default (userService: UserService,
     redisService: RedisService,
     tokenService: TokenService,
-    authenticationMiddleware: any,
+    authenticationMiddleware: NextFunction,
     logger: Logger) => {
     const router = Router();
     const controller = AuthenticationController(redisService, userService, tokenService, logger);

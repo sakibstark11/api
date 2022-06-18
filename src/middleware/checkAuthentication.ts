@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import { Logger } from 'pino';
 import RedisService from '../services/redis';
 import TokenService from '../services/token';
-import { EnteredUser } from '../utils/types/enteredUser';
+import { EnteredUser } from '../utils/types/user/enteredUser';
 import { BaseHttpError, Server500, Unauthorized401 } from '../utils/types/responses/errors/httpErrors';
 import { TokenRequestHeader } from '../utils/types/token';
 
-export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (request: Request & TokenRequestHeader, response: Response, next: NextFunction) => {
-    const { headers: { access_token, refresh_token } } = request;
+export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & TokenRequestHeader, res: Response, next: NextFunction): Promise<void | Response> => {
+    const { headers: { access_token, refresh_token } } = req;
     try {
         const decodedAccessToken = tokenService.decodeAccessToken(access_token) as EnteredUser;
         const decodedRefreshToken = tokenService.decodeRefreshToken(refresh_token) as EnteredUser;
@@ -18,7 +18,7 @@ export default (redisService: RedisService, tokenService: TokenService, logger: 
 
         if (existingRefreshToken !== refresh_token) { throw new Unauthorized401('access denied'); }
 
-        request.headers.id = decodedAccessToken.id;
+        req.headers.id = decodedAccessToken.id;
 
         logger.info({ id: decodedAccessToken.id }, 'authenticated');
 
@@ -26,10 +26,10 @@ export default (redisService: RedisService, tokenService: TokenService, logger: 
     } catch (error) {
         logger.error(error, 'authentication check failed');
         if (error instanceof BaseHttpError) {
-            return response.status(error.status).json(error.payload);
+            return res.status(error.status).json(error.payload);
         }
         const errorResponse = new Server500('something went wrong');
-        return response.status(errorResponse.status).json(errorResponse.payload);
+        return res.status(errorResponse.status).json(errorResponse.payload);
 
     }
 };

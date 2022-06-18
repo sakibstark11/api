@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from 'pino';
 import userController from '../controllers/user';
 import UserService from '../services/user';
-import { UnauthorizedUser } from '../utils/types/newUser';
+import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 export default (userService: UserService, logger: Logger) => {
     const router = Router();

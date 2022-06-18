@@ -1,5 +1,5 @@
 import { Entity, Column } from "typeorm";
-import { UnauthorizedUser } from '../utils/types/newUser';
+import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 import Base from "./base/base";
 

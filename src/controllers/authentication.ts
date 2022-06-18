@@ -1,7 +1,7 @@
 import { Logger } from 'pino';
 import HttpResponse from '../utils/types/responses/base';
 import { BaseHttpError, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
-import { UnauthorizedUser } from '../utils/types/newUser';
+import { UnauthorizedUser } from '../utils/types/user/newUser';
 import { TokenResponsePayload } from '../utils/types/token';
 
 export default (redisService: any, userService: any, tokenService: any, logger: Logger) => {

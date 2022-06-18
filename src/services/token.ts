@@ -1,5 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
-import { EnteredUser } from "../utils/types/enteredUser";
+import { EnteredUser } from "../utils/types/user/enteredUser";
 
 
 import { TokenConfig } from '../utils/types/token';

@@ -1,10 +1,10 @@
 import { Logger } from 'pino';
 import UserModel from '../models/user';
 import UserService from '../services/user';
-import { EnteredUser } from '../utils/types/enteredUser';
+import { EnteredUser } from '../utils/types/user/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
 import { BaseHttpError, Conflict409, Server500 } from '../utils/types/responses/errors/httpErrors';
-import { UnauthorizedUser } from '../utils/types/newUser';
+import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 export default (service: UserService, logger: Logger) => {
     return {

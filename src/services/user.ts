@@ -1,8 +1,8 @@
 import { Logger } from 'pino';
 import { Repository } from 'typeorm';
 import UserModel from '../models/user';
-import { EnteredUser } from '../utils/types/enteredUser';
-import { UnauthorizedUser } from '../utils/types/newUser';
+import { EnteredUser } from '../utils/types/user/enteredUser';
+import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 export default class UserService {
     private repository: Repository<UserModel>;

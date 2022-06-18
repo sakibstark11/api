@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { NextFunction } from 'express';
 import { Config } from './utils/types/config';
 import ServiceMap from './utils/types/services';
 import UserRouter from './routes/user';
@@ -12,7 +12,7 @@ export default async ({ logger, port }: Config, { user, redis, token }: ServiceM
     app.use(express.json());
 
     const userRouter = UserRouter(user, logger);
-    const authenticationRouter = AuthenticationRouter(user, redis, token, authentication, logger);
+    const authenticationRouter = AuthenticationRouter(user, redis, token, authentication as NextFunction, logger);
 
     app.use("/user", userRouter);
     app.use("/login", authenticationRouter);
