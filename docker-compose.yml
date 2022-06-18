@@ -1,18 +1,69 @@
 version: "3.9"
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
 services:
   database:
     container_name: Database
     image: postgres:14.0
     platform: linux/amd64
-    ports:
-      - 5432:${DB_PORT}
+    expose:
+      - ${DB_PORT}
     environment:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.4
+
   redis:
     container_name: Redis
     image: redis:7.0.0
     platform: linux/amd64
+    expose:
+      - ${REDIS_PORT}
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.5
+  nginx:
+    container_name: LoadBalancer
+    image: nginx:1
+    platform: linux/amd64
     ports:
-      - 6379:${REDIS_PORT}
+      - 80:80
+      - 443:443
+    volumes:
+      - ./dev/certs/:/etc/nginx/certs/
+      - ./dev/nginx/conf.d/:/etc/nginx/conf.d/
+      
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.2
+  app:
+    build:
+      context: .
+    container_name: Application
+    volumes:
+      - ./:/app
+    expose:
+      - ${APP_PORT}
+    environment:
+      - APP_PORT={APP_PORT}
+      - DB_PORT={DB_PORT}
+      - DB_NAME={DB_NAME}
+      - DB_USER={DB_USER}
+      - DB_PASSWORD={DB_PASSWORD}
+      - REDIS_PORT={REDIS_PORT}
+      - REDIS_HOST=172.20.128.5
+      - DB_HOST=172.20.128.4
+      - ACCESS_TOKEN_SECRET={ACCESS_TOKEN_SECRET}
+      - ACCESS_TOKEN_TTL={ACCESS_TOKEN_TTL}
+      - REFRESH_TOKEN_SECRET={REFRESH_TOKEN_SECRET}
+      - REFRESH_TOKEN_TTL={REFRESH_TOKEN_TTL}
+    networks:
+      static-network:
+        ipv4_address: 172.20.128.3

@@ -11,6 +11,10 @@ export type Config = {
         name: string;
         password: string;
     };
+    redis: {
+        host: string,
+        port: number;
+    },
     token: {
         access: TokenConfig;
         refresh: TokenConfig;

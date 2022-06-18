@@ -15,7 +15,7 @@ import ServiceMap from './src/utils/types/services';
 dotenv.config({ path: `${__dirname}/.env` });
 
 const config: Config = {
-    port: Number(process.env.PORT),
+    port: Number(process.env.APP_PORT),
     logger,
     database: {
         host: process.env.DB_HOST as string,
@@ -23,6 +23,10 @@ const config: Config = {
         user: process.env.DB_USER as string,
         name: process.env.DB_NAME as string,
         password: process.env.DB_PASSWORD as string,
+    },
+    redis: {
+        host: process.env.REDIS_HOST as string,
+        port: Number(process.env.REDIS_PORT),
     },
     token: {
         access: {
@@ -37,7 +41,7 @@ const config: Config = {
 };
 
 const dataSource = DataSource(config);
-const redisSource = RedisSource();
+const redisSource = RedisSource(config);
 
 const tokenService = new TokenService(config.token.access, config.token.refresh, logger);
 const userService = new UserService(dataSource.getRepository(UserModel), logger);
