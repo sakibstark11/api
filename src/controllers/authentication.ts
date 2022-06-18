@@ -3,6 +3,7 @@ import HttpResponse from '../utils/types/responses/base';
 import { BaseHttpError, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 import { TokenResponsePayload } from '../utils/types/token';
+import { GenericResponse } from '../utils/types/genericResponse';
 
 export default (redisService: any, userService: any, tokenService: any, logger: Logger) => {
     return {
@@ -32,11 +33,11 @@ export default (redisService: any, userService: any, tokenService: any, logger: 
             }
 
         },
-        logoutUser: async (id: string): Promise<HttpResponse<BaseHttpError | string>> => {
+        logoutUser: async (id: string): Promise<HttpResponse<BaseHttpError | GenericResponse>> => {
             try {
                 await redisService.removeRefreshToken(id);
 
-                return { status: 200, payload: 'logged out' };
+                return { status: 200, payload: { message: 'logged out' } };
             } catch (error) {
                 if (error instanceof BaseHttpError) {
                     logger.error({ error, id });

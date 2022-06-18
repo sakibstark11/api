@@ -1,13 +1,14 @@
+import { GenericResponse } from '../../genericResponse';
 import HttpResponse from '../base';
 
-export class BaseHttpError extends Error implements HttpResponse<any>{
+export class BaseHttpError extends Error implements HttpResponse<GenericResponse>{
     status: number;
     payload: any;
-    constructor(message: string, status: number) {
+    constructor(message: string, status: number, error?: any) {
         super(message);
         Object.setPrototypeOf(this, BaseHttpError.prototype);
         this.status = status;
-        this.payload = { message };
+        this.payload = { message, error };
     }
 
     removeStackTrace() {
@@ -43,5 +44,11 @@ export class Forbidden403 extends BaseHttpError {
 export class Unauthorized401 extends BaseHttpError {
     constructor(message: string) {
         super(message, 401);
+    }
+}
+
+export class BadRequest400 extends BaseHttpError {
+    constructor(message: string, error?: any) {
+        super(message, 400, error);
     }
 }

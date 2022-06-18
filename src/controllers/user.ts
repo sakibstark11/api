@@ -1,21 +1,28 @@
 import { Logger } from 'pino';
+import { validate } from 'class-validator';
 import UserModel from '../models/user';
 import UserService from '../services/user';
 import { EnteredUser } from '../utils/types/user/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
-import { BaseHttpError, Conflict409, Server500 } from '../utils/types/responses/errors/httpErrors';
-import { UnauthorizedUser } from '../utils/types/user/newUser';
+import { BadRequest400, BaseHttpError, Conflict409, Server500 } from '../utils/types/responses/errors/httpErrors';
+import { NewUser } from '../utils/types/user/newUser';
 
 export default (service: UserService, logger: Logger) => {
     return {
-        createUser: async ({ email, password }: UnauthorizedUser): Promise<HttpResponse<BaseHttpError | EnteredUser>> => {
+        createUser: async ({ email, password, name }: NewUser): Promise<HttpResponse<BaseHttpError | EnteredUser>> => {
             const user = new UserModel();
             user.email = email;
             user.password = password;
+            user.name = name;
+            console.log({ email, password, name });
             try {
+                const inputValidation = await validate(user);
+                if (inputValidation.length) {
+                    throw new BadRequest400('please check payload', inputValidation);
+                }
                 const existingUser = await service.getUser(email);
                 if (existingUser) {
-                    throw new Conflict409(`user already exists`);
+                    throw new Conflict409('user already exists');
                 }
                 const createdUser = await service.createUser(user);
                 logger.info({ createdUser }, 'user created');

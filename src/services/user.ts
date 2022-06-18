@@ -2,7 +2,7 @@ import { Logger } from 'pino';
 import { Repository } from 'typeorm';
 import UserModel from '../models/user';
 import { EnteredUser } from '../utils/types/user/enteredUser';
-import { UnauthorizedUser } from '../utils/types/user/newUser';
+import { NewUser, UnauthorizedUser } from '../utils/types/user/newUser';
 
 export default class UserService {
     private repository: Repository<UserModel>;
@@ -24,8 +24,8 @@ export default class UserService {
         return null;
     }
 
-    async createUser({ email, password: passwordHash }: UnauthorizedUser): Promise<EnteredUser> {
-        const newUser = await this.repository.save({ email, password: passwordHash });
+    async createUser({ email, password: passwordHash, name }: NewUser): Promise<EnteredUser> {
+        const newUser = await this.repository.save({ email, password: passwordHash, name });
         const user = { email: newUser.email, id: newUser.id };
         return user;
     }
