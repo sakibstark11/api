@@ -64,15 +64,9 @@ dataSource.initialize().then(() => {
         App(config, services, middlewares);
     }).catch((error) => {
         logger.error(error, "failed to initialize redis");
-        redisSource.quit().then(() => {
-            logger.warn("closed redis connection; will exit");
-            process.exit(1);
-        }).catch((error) => {
-            logger.error(error, "failed to close redis connection; will exit");
-            process.exit(1);
-        });
-    }).catch((error) => {
-        logger.error(error, 'failed to initialize database; will exit');
         process.exit(1);
     });
+}).catch((error) => {
+    logger.error(error, "failed to initialize database");
+    process.exit(1);
 });
