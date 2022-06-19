@@ -10,10 +10,12 @@ export default class TokenService {
     private accessToken: TokenConfig;
     private refreshToken: TokenConfig;
     private logger: Logger;
+    public refreshTokenTTL: number;
 
     constructor(accessToken: TokenConfig, refreshToken: TokenConfig, logger: Logger) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.refreshTokenTTL = refreshToken.ttl;
         this.logger = logger;
     }
 

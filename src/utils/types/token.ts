@@ -1,5 +1,3 @@
-import { Request } from 'express';
-
 export type TokenResponsePayload = {
     accessToken: string;
     refreshToken: string;
@@ -7,9 +5,11 @@ export type TokenResponsePayload = {
 
 export type TokenConfig = { ttl: number, secret: string; };
 
-export interface TokenRequestHeader {
+export interface RequestObjectStructure {
     headers: {
-        access_token: string;
-        refresh_token: string;
+        authorization: string;
+    };
+    cookies: {
+        refreshToken: string;
     };
 };
