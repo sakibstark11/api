@@ -4,8 +4,11 @@ import { BaseHttpError, Server500, NotFound404, Forbidden403 } from '../utils/ty
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 import { TokenResponsePayload } from '../utils/types/token';
 import { GenericResponse } from '../utils/types/genericResponse';
+import RedisService from '../services/redis';
+import UserService from '../services/user';
+import TokenService from '../services/token';
 
-export default (redisService: any, userService: any, tokenService: any, logger: Logger) => {
+export default (redisService: RedisService, userService: UserService, tokenService: TokenService, logger: Logger) => {
     return {
         loginUser: async ({ email, password }: UnauthorizedUser): Promise<HttpResponse<BaseHttpError | TokenResponsePayload>> => {
             try {
