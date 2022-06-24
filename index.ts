@@ -12,7 +12,7 @@ import RedisService from './src/services/redis';
 import TokenService from "./src/services/token";
 import ServiceMap from './src/utils/types/services';
 
-dotenv.config({ path: `${__dirname}/.env.${process.env.NODE_ENV || 'development'}` });
+dotenv.config({ path: `${__dirname}/.env` });
 
 const config: Config = {
     port: Number(process.env.APP_PORT),
