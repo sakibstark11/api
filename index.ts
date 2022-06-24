@@ -11,7 +11,6 @@ import UserService from './src/services/user';
 import RedisService from './src/services/redis';
 import TokenService from "./src/services/token";
 import ServiceMap from './src/utils/types/services';
-import { NextFunction } from 'express';
 
 dotenv.config({ path: `${__dirname}/.env` });
 
