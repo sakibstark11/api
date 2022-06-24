@@ -14,7 +14,6 @@ export default (service: UserService, logger: Logger) => {
             user.email = email;
             user.password = password;
             user.name = name;
-            console.log({ email, password, name });
             try {
                 const inputValidation = await validate(user);
                 if (inputValidation.length) {
