@@ -8,7 +8,6 @@ import { RequestObjectStructure } from '../utils/types/token';
 
 export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
     const { headers: { authorization }, cookies: { refreshToken } } = req;
-    console.log(req.headers);
     try {
         const accessToken = authorization.split(" ")[1];
         const decodedAccessToken = tokenService.decodeAccessToken(accessToken) as EnteredUser;

@@ -29,9 +29,9 @@ export default (userService: UserService,
         return res.status(status).json(modifiedPayload);
     });
 
-    router.delete('/', authenticationMiddleware, async (req: Request, resp: Response) => {
+    router.delete('/', authenticationMiddleware, async (req: Request, res: Response) => {
         const { status, payload } = await controller.logoutUser(req.headers.id as string);
-        return resp.status(status).json(payload);
+        return res.status(status).json(payload);
     });
     return router;
 };
