@@ -10,6 +10,8 @@ export default (redisService: RedisService, tokenService: TokenService, logger: 
     const { cookies: { refreshToken } } = req;
     try {
         const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
+        if (decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
+
 
         const existingRefreshToken = await redisService.fetchRefreshToken(decodedRefreshToken.id);
 

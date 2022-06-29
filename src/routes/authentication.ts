@@ -35,7 +35,12 @@ export default (userService: UserService,
 
     router.get('/', refreshTokenMiddleware, async (req: Request, res: Response) => {
         const { status, payload } = await controller.refreshUser(req.headers.id as string);
-        return res.status(status).json(payload);
+        const modifiedPayload: GenericResponse | Partial<TokenResponsePayload> = { ...payload };
+        if ("refreshToken" in modifiedPayload) {
+            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL, httpOnly: true, secure: true, path: "/api" });
+            delete modifiedPayload.refreshToken;
+        }
+        return res.status(status).json(modifiedPayload);
     });
     return router;
 };
