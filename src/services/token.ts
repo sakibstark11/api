@@ -20,19 +20,19 @@ export default class TokenService {
     }
 
     createRefreshToken(
-        { id, email }: EnteredUser
+        id: string
     ) {
         return sign({
-            id, email
+            id
         }, this.refreshToken.secret, { expiresIn: this.refreshToken.ttl });
 
     }
 
     createAccessToken(
-        { id, email }: EnteredUser
+        id: string
     ) {
         return sign({
-            id, email
+            id
         }, this.accessToken.secret, { expiresIn: this.accessToken.ttl });
     }
 

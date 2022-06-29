@@ -21,8 +21,8 @@ export default (redisService: RedisService, userService: UserService, tokenServi
                     throw new Forbidden403(`email or password incorrect`);
                 }
 
-                const accessToken = tokenService.createAccessToken(user);
-                const refreshToken = tokenService.createRefreshToken(user);
+                const accessToken = tokenService.createAccessToken(user.id);
+                const refreshToken = tokenService.createRefreshToken(user.id);
 
                 await redisService.storeRefreshToken(user.id, refreshToken);
 
@@ -41,6 +41,24 @@ export default (redisService: RedisService, userService: UserService, tokenServi
                 await redisService.removeRefreshToken(id);
 
                 return { status: 200, payload: { message: 'logged out' } };
+            } catch (error) {
+                if (error instanceof BaseHttpError) {
+                    logger.error({ error, id });
+                    return error.removeStackTrace();
+                }
+                return new Server500('something went wrong').removeStackTrace();
+            }
+        },
+        refreshUser: async (id: string): Promise<HttpResponse<BaseHttpError | TokenResponsePayload>> => {
+            try {
+                await redisService.removeRefreshToken(id);
+
+                const accessToken = tokenService.createAccessToken(id);
+                const refreshToken = tokenService.createRefreshToken(id);
+
+                await redisService.storeRefreshToken(id, refreshToken);
+
+                return { status: 200, payload: { accessToken, refreshToken } };
             } catch (error) {
                 if (error instanceof BaseHttpError) {
                     logger.error({ error, id });

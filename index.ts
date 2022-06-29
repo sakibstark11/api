@@ -3,6 +3,7 @@ import logger from './src/loggers/logger';
 import App from './src/app';
 import { Config } from './src/utils/types/config';
 import AuthenticationMiddleware from './src/middleware/checkAuthentication';
+import RefreshTokenMiddleware from './src/middleware/checkRefreshToken';
 import { MiddlewareMap } from './src/utils/types/middlewares';
 import DataSource from './src/utils/database/database';
 import RedisSource from './src/utils/redis/redis';
@@ -54,7 +55,8 @@ const services: ServiceMap = {
 };
 
 const middlewares: MiddlewareMap = {
-    authentication: AuthenticationMiddleware(redisService, tokenService, logger)
+    authentication: AuthenticationMiddleware(redisService, tokenService, logger),
+    refreshToken: RefreshTokenMiddleware(redisService, tokenService, logger)
 };
 
 dataSource.initialize().then(() => {
