@@ -12,7 +12,7 @@
   "scripts": {
     "dev-app": "node_modules/.bin/nodemon --watch './**/*.ts' --watch './.env' --exec 'ts-node' index.ts",
     "dev-infra": "docker-compose up",
-    "dev": "npm run dev-infra > /dev/null 2>&1 & npm run dev-app > /dev/null 2>&1"
+    "dev": "npm run dev-infra > /dev/null 2>&1 && npm run dev-app > /dev/null 2>&1"
   },
   "dependencies": {
     "class-validator": "^0.13.2",
