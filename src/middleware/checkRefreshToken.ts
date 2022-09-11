@@ -10,10 +10,8 @@ export default (redisService: RedisService, tokenService: TokenService, logger: 
     const { cookies: { refreshToken }, headers: { authorization } } = req;
     try {
         const accessToken = authorization.split("Bearer ")[1];
-        logger.info({ accessToken }, "accessToken");
         const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
         const decodeAccessToken = tokenService.decodeAccessToken(accessToken);
-        logger.info({ decodeAccessToken }, "decodeAccessToken");
 
         if (decodeAccessToken === null) {
             throw new Error("invalid token");
