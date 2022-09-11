@@ -1,8 +1,6 @@
-import { sign, verify } from "jsonwebtoken";
-import { EnteredUser } from "../utils/types/user/enteredUser";
+import { sign, TokenExpiredError, verify } from "jsonwebtoken";
 
-
-import { TokenConfig } from '../utils/types/token';
+import { TokenConfig, TOKEN_EXPIRED } from '../utils/types/token';
 import { Logger } from 'pino';
 
 
@@ -38,9 +36,13 @@ export default class TokenService {
 
     decodeAccessToken(token: string) {
         try {
-            const decode = verify(token, this.accessToken.secret);
-            return decode;
+            const decoded = verify(token, this.accessToken.secret);
+            return decoded;
         } catch (error) {
+            if (error instanceof TokenExpiredError) {
+                this.logger.warn(error, 'access token expired');
+                return TOKEN_EXPIRED;
+            }
             this.logger.error(error, 'failed to verify access token');
             return null;
         }

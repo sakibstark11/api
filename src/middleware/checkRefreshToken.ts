@@ -3,15 +3,15 @@ import { Logger } from 'pino';
 import RedisService from '../services/redis';
 import TokenService from '../services/token';
 import { EnteredUser } from '../utils/types/user/enteredUser';
-import { BaseHttpError, Server500, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
-import { RequestObjectStructure } from '../utils/types/token';
+import { BaseHttpError, Server500, Forbidden403, Unauthorized401 } from '../utils/types/responses/errors/httpErrors';
+import { RequestObjectStructure, TOKEN_EXPIRED } from '../utils/types/token';
 
 export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
     const { cookies: { refreshToken } } = req;
     try {
         const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
-        if (decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
 
+        if (decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
 
         const existingRefreshToken = await redisService.fetchRefreshToken(decodedRefreshToken.id);
 

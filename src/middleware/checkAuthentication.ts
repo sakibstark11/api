@@ -4,16 +4,16 @@ import RedisService from '../services/redis';
 import TokenService from '../services/token';
 import { EnteredUser } from '../utils/types/user/enteredUser';
 import { BaseHttpError, Forbidden403, Server500 } from '../utils/types/responses/errors/httpErrors';
-import { RequestObjectStructure } from '../utils/types/token';
+import { RequestObjectStructure, TokenExpiredError, TOKEN_EXPIRED } from '../utils/types/token';
 
 export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
     const { headers: { authorization }, cookies: { refreshToken } } = req;
     try {
         const accessToken = authorization.split(" ")[1];
-        const decodedAccessToken = tokenService.decodeAccessToken(accessToken) as EnteredUser;
+        const decodedAccessToken = tokenService.decodeAccessToken(accessToken) as EnteredUser | TokenExpiredError;
         const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
 
-        if (decodedAccessToken === null || decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
+        if (decodedAccessToken === TOKEN_EXPIRED || decodedAccessToken === null || decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
 
         const existingRefreshToken = await redisService.fetchRefreshToken(decodedAccessToken.id);
 

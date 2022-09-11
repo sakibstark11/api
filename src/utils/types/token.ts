@@ -13,3 +13,5 @@ export interface RequestObjectStructure {
         refreshToken: string;
     };
 };
+export const TOKEN_EXPIRED = "TokenExpiredError";
+export type TokenExpiredError = "TokenExpiredError";
