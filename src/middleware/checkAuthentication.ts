@@ -9,7 +9,7 @@ import { RequestObjectStructure, TokenExpiredError, TOKEN_EXPIRED } from '../uti
 export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
     const { headers: { authorization }, cookies: { refreshToken } } = req;
     try {
-        const accessToken = authorization.split(" ")[1];
+        const accessToken = authorization.split("Bearer ")[1];
         const decodedAccessToken = tokenService.decodeAccessToken(accessToken) as EnteredUser | TokenExpiredError;
         const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
 

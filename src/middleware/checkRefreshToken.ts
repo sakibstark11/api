@@ -7,10 +7,15 @@ import { BaseHttpError, Server500, Forbidden403, Unauthorized401 } from '../util
 import { RequestObjectStructure, TOKEN_EXPIRED } from '../utils/types/token';
 
 export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
-    const { cookies: { refreshToken } } = req;
+    const { cookies: { refreshToken }, headers: { authorization } } = req;
     try {
-        const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
+        const accessToken = authorization.split("Bearer ")[1];
 
+        const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
+        const decodeAccessToken = tokenService.decodeAccessToken(accessToken);
+        if (decodeAccessToken !== TOKEN_EXPIRED || decodeAccessToken === null) {
+            throw new Error("invalid tokens");
+        }
         if (decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
 
         const existingRefreshToken = await redisService.fetchRefreshToken(decodedRefreshToken.id);
