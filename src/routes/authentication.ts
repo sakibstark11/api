@@ -8,6 +8,8 @@ import { GenericResponse } from '../utils/types/genericResponse';
 import { TokenResponsePayload } from '../utils/types/token';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 
+const COOKIE_EXPIRATION_MS = 1000;
+
 export default (userService: UserService,
     redisService: RedisService,
     tokenService: TokenService,
@@ -22,7 +24,7 @@ export default (userService: UserService,
         const { status, payload } = await controller.loginUser({ email, password });
         const modifiedPayload: GenericResponse | Partial<TokenResponsePayload> = { ...payload };
         if ("refreshToken" in modifiedPayload) {
-            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL, httpOnly: true, secure: true, path: "/api" });
+            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL * COOKIE_EXPIRATION_MS, httpOnly: true, secure: true, path: "/api" });
             delete modifiedPayload.refreshToken;
         }
         return res.status(status).json(modifiedPayload);
@@ -37,7 +39,7 @@ export default (userService: UserService,
         const { status, payload } = await controller.refreshUser(req.headers.id as string);
         const modifiedPayload: GenericResponse | Partial<TokenResponsePayload> = { ...payload };
         if ("refreshToken" in modifiedPayload) {
-            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL, httpOnly: true, secure: true, path: "/api" });
+            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL * COOKIE_EXPIRATION_MS, httpOnly: true, secure: true, path: "/api" });
             delete modifiedPayload.refreshToken;
         }
         return res.status(status).json(modifiedPayload);

@@ -4,7 +4,7 @@ import RedisService from '../services/redis';
 import TokenService from '../services/token';
 import { EnteredUser } from '../utils/types/user/enteredUser';
 import { BaseHttpError, Server500, Forbidden403, Unauthorized401 } from '../utils/types/responses/errors/httpErrors';
-import { RequestObjectStructure, TOKEN_EXPIRED } from '../utils/types/token';
+import { RequestObjectStructure } from '../utils/types/token';
 
 export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
     const { cookies: { refreshToken }, headers: { authorization } } = req;

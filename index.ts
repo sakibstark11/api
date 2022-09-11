@@ -32,11 +32,11 @@ const config: Config = {
     token: {
         access: {
             secret: process.env.ACCESS_TOKEN_SECRET as string,
-            ttl: Number(process.env.ACCESS_TOKEN_TTL)
+            ttl: Number(process.env.ACCESS_TOKEN_TTL_SECONDS)
         },
         refresh: {
             secret: process.env.REFRESH_TOKEN_SECRET as string,
-            ttl: Number(process.env.REFRESH_TOKEN_TTL)
+            ttl: Number(process.env.REFRESH_TOKEN_TTL_SECONDS)
         }
     }
 };
