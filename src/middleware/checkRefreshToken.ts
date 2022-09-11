@@ -10,12 +10,15 @@ export default (redisService: RedisService, tokenService: TokenService, logger: 
     const { cookies: { refreshToken }, headers: { authorization } } = req;
     try {
         const accessToken = authorization.split("Bearer ")[1];
-
+        logger.info({ accessToken }, "accessToken");
         const decodedRefreshToken = tokenService.decodeRefreshToken(refreshToken) as EnteredUser;
         const decodeAccessToken = tokenService.decodeAccessToken(accessToken);
-        if (decodeAccessToken !== TOKEN_EXPIRED || decodeAccessToken === null) {
-            throw new Error("invalid tokens");
+        logger.info({ decodeAccessToken }, "decodeAccessToken");
+
+        if (decodeAccessToken === null) {
+            throw new Error("invalid token");
         }
+
         if (decodedRefreshToken === null) { throw new Forbidden403('access denied'); }
 
         const existingRefreshToken = await redisService.fetchRefreshToken(decodedRefreshToken.id);
