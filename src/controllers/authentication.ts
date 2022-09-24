@@ -7,8 +7,9 @@ import { GenericResponse } from '../utils/types/genericResponse';
 import RedisService from '../services/redis';
 import UserService from '../services/user';
 import TokenService from '../services/token';
+import { TypeRedisService, TypeTokenService, TypeUserService } from '../utils/types/services';
 
-export default (redisService: ReturnType<typeof RedisService>, userService: ReturnType<typeof UserService>, tokenService: ReturnType<typeof TokenService>, logger: Logger) => {
+export default (redisService: TypeRedisService, userService: TypeUserService, tokenService: TypeTokenService, logger: Logger) => {
     return {
         loginUser: async ({ email, password }: UnauthorizedUser): Promise<HttpResponse<BaseHttpError | TokenResponsePayload>> => {
             try {

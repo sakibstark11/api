@@ -5,8 +5,9 @@ import TokenService from '../services/token';
 import { EnteredUser } from '../utils/types/user/enteredUser';
 import { BaseHttpError, Forbidden403, Server500 } from '../utils/types/responses/errors/httpErrors';
 import { RequestObjectStructure, TokenExpiredError, TOKEN_EXPIRED } from '../utils/types/token';
+import { TypeRedisService, TypeTokenService } from '../utils/types/services';
 
-export default (redisService: RedisService, tokenService: TokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
+export default (redisService: TypeRedisService, tokenService: TypeTokenService, logger: Logger) => async (req: Request & RequestObjectStructure, res: Response, next: NextFunction): Promise<void | Response> => {
     const { headers: { authorization }, cookies: { refreshToken } } = req;
     try {
         const accessToken = authorization.split("Bearer ")[1];

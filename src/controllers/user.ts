@@ -6,8 +6,9 @@ import { EnteredUser } from '../utils/types/user/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
 import { BadRequest400, BaseHttpError, Conflict409, Server500 } from '../utils/types/responses/errors/httpErrors';
 import { NewUser } from '../utils/types/user/newUser';
+import { TypeUserService } from '../utils/types/services';
 
-export default (service: UserService, logger: Logger) => {
+export default (service: TypeUserService, logger: Logger) => {
     return {
         createUser: async ({ email, password, name }: NewUser): Promise<HttpResponse<BaseHttpError | EnteredUser>> => {
             const user = new UserModel();
