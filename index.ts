@@ -13,6 +13,10 @@ import RedisService from './src/services/redis';
 import TokenService from "./src/services/token";
 import ServiceMap from './src/utils/types/services';
 
+import UserRepository from "./src/repositories/user";
+import RedisRepository from "./src/repositories/redis";
+
+
 dotenv.config({ path: `${__dirname}/.env` });
 
 const config: Config = {
@@ -44,9 +48,12 @@ const config: Config = {
 const dataSource = DataSource(config);
 const redisSource = RedisSource(config);
 
+const userRepository = UserRepository(dataSource.getRepository(UserModel));
+const redisRepository = RedisRepository(redisSource);
+
 const tokenService = TokenService(config.token.access, config.token.refresh, logger);
-const userService = UserService(dataSource.getRepository(UserModel), logger);
-const redisService = RedisService(redisSource, config.token.refresh.ttl, logger);
+const userService = UserService(userRepository, logger);
+const redisService = RedisService(redisRepository, config.token.refresh.ttl, logger);
 
 const services: ServiceMap = {
     user: userService,
@@ -54,7 +61,7 @@ const services: ServiceMap = {
     token: tokenService
 };
 
-const middlewares: MiddlewareMap = {
+const middlewareFunctions: MiddlewareMap = {
     authentication: AuthenticationMiddleware(redisService, tokenService, logger),
     refreshToken: RefreshTokenMiddleware(redisService, tokenService, logger)
 };
@@ -63,7 +70,7 @@ dataSource.initialize().then(() => {
     logger.info('database initialized');
     redisSource.connect().then(() => {
         logger.info('redis initialized');
-        App(config, services, middlewares);
+        App(config, services, middlewareFunctions);
     }).catch((error) => {
         logger.error(error, "failed to initialize redis");
         process.exit(1);

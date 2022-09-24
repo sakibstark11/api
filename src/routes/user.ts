@@ -1,10 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from 'pino';
 import userController from '../controllers/user';
-import UserService from '../services/user';
+import { TypeUserService } from '../utils/types/services';
 import { NewUser } from '../utils/types/user/newUser';
 
-export default (userService: UserService, logger: Logger) => {
+export default (userService: TypeUserService, logger: Logger) => {
     const router = Router();
     const controller = userController(userService, logger);
     router.post('/', async (req: Request, res: Response) => {

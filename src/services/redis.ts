@@ -1,7 +1,7 @@
 import { Logger } from 'pino';
-import RedisSource from '../utils/redis/redis';
+import { RedisRepository } from '../utils/types/repositories';
 
-export default (repository: ReturnType<typeof RedisSource>, refreshTokenTTL: number, logger: Logger) => {
+export default (repository: RedisRepository, refreshTokenTTL: number, logger: Logger) => {
     return {
         storeRefreshToken: (key: string, token: string) => {
             return repository.set(key, token, {

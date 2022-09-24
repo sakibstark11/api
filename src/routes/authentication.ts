@@ -5,14 +5,15 @@ import RedisService from '../services/redis';
 import TokenService from '../services/token';
 import UserService from '../services/user';
 import { GenericResponse } from '../utils/types/genericResponse';
+import { TypeRedisService, TypeTokenService, TypeUserService } from '../utils/types/services';
 import { TokenResponsePayload } from '../utils/types/token';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 const COOKIE_EXPIRATION_MS = 1000;
 
-export default (userService: UserService,
-    redisService: RedisService,
-    tokenService: TokenService,
+export default (userService: TypeUserService,
+    redisService: TypeRedisService,
+    tokenService: TypeTokenService,
     authenticationMiddleware: NextFunction,
     refreshTokenMiddleware: NextFunction,
     logger: Logger) => {

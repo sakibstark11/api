@@ -1,6 +1,6 @@
 import { Entity, Column } from "typeorm";
 import { IsEmail, Length } from 'class-validator';
-import { UnauthorizedUser } from '../utils/types/user/newUser';
+import { UnauthorizedUser, NewUser } from '../utils/types/user/newUser';
 
 import Base from "./base/base";
 
@@ -16,4 +16,11 @@ export default class UserModel extends Base implements UnauthorizedUser {
     @Length(5, 30)
     @Column()
     name: string;
+
+    constructor({ email, password, name }: NewUser) {
+        super();
+        this.email = email;
+        this.password = password;
+        this.name = name;
+    };
 }
