@@ -44,9 +44,9 @@ const config: Config = {
 const dataSource = DataSource(config);
 const redisSource = RedisSource(config);
 
-const tokenService = new TokenService(config.token.access, config.token.refresh, logger);
-const userService = new UserService(dataSource.getRepository(UserModel), logger);
-const redisService = new RedisService(redisSource, config.token.refresh.ttl, logger);
+const tokenService = TokenService(config.token.access, config.token.refresh, logger);
+const userService = UserService(dataSource.getRepository(UserModel), logger);
+const redisService = RedisService(redisSource, config.token.refresh.ttl, logger);
 
 const services: ServiceMap = {
     user: userService,
