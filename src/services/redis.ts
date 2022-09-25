@@ -4,15 +4,15 @@ import { RedisRepository } from '../utils/types/repositories';
 export default (repository: RedisRepository, refreshTokenTTL: number, logger: Logger) => {
     return {
         storeRefreshToken: (key: string, token: string) => {
-            return repository.set(key, token, {
-                EX: refreshTokenTTL
-            });
+            return repository.store(key, token,
+                refreshTokenTTL
+            );
         },
         fetchRefreshToken: (key: string) => {
-            return repository.get(key);
+            return repository.fetch(key);
         },
         removeRefreshToken: (key: string) => {
-            return repository.del(key);
+            return repository.delete(key);
         }
     };
 

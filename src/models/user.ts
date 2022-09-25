@@ -17,10 +17,13 @@ export default class UserModel extends Base implements UnauthorizedUser {
     @Column()
     name: string;
 
-    constructor({ email, password, name }: NewUser) {
+    constructor(user?: NewUser) {
         super();
-        this.email = email;
-        this.password = password;
-        this.name = name;
+        if (user) {
+            this.email = user.email;
+            this.password = user.password;
+            this.name = user.name;
+        }
     };
+
 }
