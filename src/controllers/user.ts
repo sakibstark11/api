@@ -1,7 +1,6 @@
 import { Logger } from 'pino';
 import { validate } from 'class-validator';
 import UserModel from '../models/user';
-import UserService from '../services/user';
 import { EnteredUser } from '../utils/types/user/enteredUser';
 import HttpResponse from '../utils/types/responses/base';
 import {

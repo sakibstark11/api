@@ -5,16 +5,22 @@ import { Config } from './src/utils/types/config';
 import AuthenticationMiddleware from './src/middleware/checkAuthentication';
 import RefreshTokenMiddleware from './src/middleware/checkRefreshToken';
 import { MiddlewareMap } from './src/utils/types/middlewares';
+import Controllers from './src/utils/types/controllers';
+
 import DataSource from './src/utils/database/database';
 import RedisSource from './src/utils/redis/redis';
 import UserModel from './src/models/user';
-import UserService from './src/services/user';
-import RedisService from './src/services/redis';
-import TokenService from "./src/services/token";
-import ServiceMap from './src/utils/types/services';
+
 
 import UserRepository from "./src/repositories/user";
 import RedisRepository from "./src/repositories/redis";
+
+import UserService from './src/services/user';
+import RedisService from './src/services/redis';
+import TokenService from "./src/services/token";
+
+import UserController from "./src/controllers/user";
+import AuthenticationController from './src/controllers/authentication';
 
 
 dotenv.config({ path: `${__dirname}/.env` });
@@ -55,10 +61,12 @@ const tokenService = TokenService(config.token.access, config.token.refresh, log
 const userService = UserService(userRepository, logger);
 const redisService = RedisService(redisRepository, config.token.refresh.ttl, logger);
 
-const services: ServiceMap = {
-    user: userService,
-    redis: redisService,
-    token: tokenService
+const userController = UserController(userService, logger);
+const authenticationController = AuthenticationController(redisService, userService, tokenService, logger);
+
+const controllers: Controllers = {
+    user: userController,
+    authentication: authenticationController
 };
 
 const middlewareFunctions: MiddlewareMap = {
@@ -70,7 +78,7 @@ dataSource.initialize().then(() => {
     logger.info('database initialized');
     redisSource.connect().then(() => {
         logger.info('redis initialized');
-        App(config, services, middlewareFunctions);
+        App(config, controllers, middlewareFunctions);
     }).catch((error) => {
         logger.error(error, "failed to initialize redis");
         process.exit(1);

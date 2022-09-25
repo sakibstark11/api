@@ -1,34 +1,22 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from 'pino';
-import AuthenticationController from '../controllers/authentication';
-import RedisService from '../services/redis';
-import TokenService from '../services/token';
-import UserService from '../services/user';
+import { TypeAuthenticationController } from '../utils/types/controllers';
 import { GenericResponse } from '../utils/types/genericResponse';
-import { TypeRedisService, TypeTokenService, TypeUserService } from '../utils/types/services';
 import { TokenResponsePayload } from '../utils/types/token';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 const COOKIE_EXPIRATION_MS = 1000;
 
-export default (userService: TypeUserService,
-    redisService: TypeRedisService,
-    tokenService: TypeTokenService,
+export default (controller: TypeAuthenticationController,
     authenticationMiddleware: NextFunction,
     refreshTokenMiddleware: NextFunction,
     logger: Logger) => {
     const router = Router();
-    const controller = AuthenticationController(redisService, userService, tokenService, logger);
 
     router.post('/', async (req: Request, res: Response) => {
         const { email, password } = req.body as UnauthorizedUser;;
         const { status, payload } = await controller.loginUser({ email, password });
-        const modifiedPayload: GenericResponse | Partial<TokenResponsePayload> = { ...payload };
-        if ("refreshToken" in modifiedPayload) {
-            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL * COOKIE_EXPIRATION_MS, httpOnly: true, secure: true, path: "/api" });
-            delete modifiedPayload.refreshToken;
-        }
-        return res.status(status).json(modifiedPayload);
+        return res.status(status).json(payload);
     });
 
     router.delete('/', authenticationMiddleware, async (req: Request, res: Response) => {
@@ -38,12 +26,7 @@ export default (userService: TypeUserService,
 
     router.get('/', refreshTokenMiddleware, async (req: Request, res: Response) => {
         const { status, payload } = await controller.refreshUser(req.headers.id as string);
-        const modifiedPayload: GenericResponse | Partial<TokenResponsePayload> = { ...payload };
-        if ("refreshToken" in modifiedPayload) {
-            res.cookie("refreshToken", modifiedPayload.refreshToken, { maxAge: tokenService.refreshTokenTTL * COOKIE_EXPIRATION_MS, httpOnly: true, secure: true, path: "/api" });
-            delete modifiedPayload.refreshToken;
-        }
-        return res.status(status).json(modifiedPayload);
+        return res.status(status).json(payload);
     });
     return router;
 };
