@@ -23,9 +23,10 @@ export default (
 
         if (isTokenPayload(payload)) {
             res.cookie('refreshToken', payload.refreshToken, {
-                maxAge: refreshTokenTtl,
-                secure: true,
+                maxAge: refreshTokenTtl * 1000,
                 httpOnly: true,
+                secure: true,
+                path: '/',
             });
             delete payload.refreshToken;
         }
@@ -40,6 +41,13 @@ export default (
             const { status, payload } = await controller.logoutUser(
                 req.headers.id as string,
             );
+
+            res.clearCookie('refreshToken', {
+                httpOnly: true,
+                secure: true,
+                path: '/',
+            });
+
             return res.status(status).json(payload);
         },
     );
@@ -48,9 +56,20 @@ export default (
         '/',
         refreshTokenMiddleware,
         async (req: Request, res: Response) => {
-            const { status, payload } = await controller.refreshUser(
+            const { status, payload } = (await controller.refreshUser(
                 req.headers.id as string,
-            );
+            )) as HttpResponse<BaseHttpError | Partial<TokenResponsePayload>>;
+
+            if (isTokenPayload(payload)) {
+                res.cookie('refreshToken', payload.refreshToken, {
+                    maxAge: refreshTokenTtl * 1000,
+                    httpOnly: true,
+                    secure: true,
+                    path: '/',
+                });
+                delete payload.refreshToken;
+            }
+
             return res.status(status).json(payload);
         },
     );

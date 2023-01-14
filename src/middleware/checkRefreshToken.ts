@@ -49,6 +49,10 @@ export default (
 
             req.headers.id = decodedRefreshToken.id;
 
+            logger.info(
+                { id: decodedRefreshToken.id },
+                'refresh token checked',
+            );
             return next();
         } catch (error) {
             logger.error(error, 'refresh token check failed');

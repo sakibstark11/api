@@ -57,7 +57,7 @@ export default (
         ): Promise<HttpResponse<BaseHttpError | GenericResponse>> => {
             try {
                 await redisService.removeRefreshToken(id);
-
+                logger.info({ id }, 'logged out');
                 return { status: 200, payload: { message: 'logged out' } };
             } catch (error) {
                 if (error instanceof BaseHttpError) {
