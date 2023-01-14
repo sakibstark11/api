@@ -1,11 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from 'pino';
 import { TypeAuthenticationController } from '../utils/types/controllers';
-import { GenericResponse } from '../utils/types/genericResponse';
-import { TokenResponsePayload } from '../utils/types/token';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 
-const COOKIE_EXPIRATION_MS = 1000;
 
 export default (controller: TypeAuthenticationController,
     authenticationMiddleware: NextFunction,

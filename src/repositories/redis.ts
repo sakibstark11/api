@@ -1,4 +1,3 @@
-import { Logger } from 'pino';
 import RedisSource from '../utils/redis/redis';
 
 export default (connection: ReturnType<typeof RedisSource>) => {

@@ -1,5 +1,4 @@
 import { Logger } from 'pino';
-import { Repository } from 'typeorm';
 import UserModel from '../models/user';
 import { TypeUserRepository } from '../utils/types/repositories';
 import { EnteredUser } from '../utils/types/user/enteredUser';
