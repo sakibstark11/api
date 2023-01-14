@@ -4,16 +4,16 @@ import {
     UpdateDateColumn,
     BaseEntity,
     PrimaryGeneratedColumn,
-} from "typeorm";
+} from 'typeorm';
 
 @Entity()
 export default class Common extends BaseEntity {
-    @PrimaryGeneratedColumn("uuid")
+    @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @CreateDateColumn({ type: "timestamptz", select: false })
+    @CreateDateColumn({ type: 'timestamptz', select: false })
     createdAt: Date;
 
-    @UpdateDateColumn({ type: "timestamptz", select: false })
+    @UpdateDateColumn({ type: 'timestamptz', select: false })
     updatedAt: Date;
 }

@@ -2,7 +2,7 @@ import { Logger } from 'pino';
 import { validate } from 'class-validator';
 import UserModel from '../models/user';
 import { EnteredUser } from '../utils/types/user/enteredUser';
-import HttpResponse from '../utils/types/responses/base';
+import { HttpResponse } from '../utils/types/responses/base';
 import {
     BadRequest400,
     BaseHttpError,

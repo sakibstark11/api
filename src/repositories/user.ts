@@ -9,11 +9,14 @@ export default (connection: Repository<UserModel>) => {
             const user = await connection.findOneBy({ email });
             return user;
         },
-        insertUser: async ({ email, password, name }: NewUser): Promise<EnteredUser> => {
+        insertUser: async ({
+            email,
+            password,
+            name,
+        }: NewUser): Promise<EnteredUser> => {
             const newUser = await connection.save({ email, password, name });
             const user = { email: newUser.email, id: newUser.id };
             return user;
-        }
+        },
     };
-
 };

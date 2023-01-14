@@ -4,7 +4,7 @@ export default (connection: ReturnType<typeof RedisSource>) => {
     return {
         store: (key: string, token: string, refreshTokenTTL: number) => {
             return connection.set(key, token, {
-                EX: refreshTokenTTL
+                EX: refreshTokenTTL,
             });
         },
         fetch: (key: string) => {
@@ -12,7 +12,6 @@ export default (connection: ReturnType<typeof RedisSource>) => {
         },
         delete: (key: string) => {
             return connection.del(key);
-        }
+        },
     };
-
 };

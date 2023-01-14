@@ -1,4 +1,4 @@
-export default interface HttpResponse<generic> {
+export interface HttpResponse<generic> {
     status: number;
     payload: generic;
 }

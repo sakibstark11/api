@@ -1,7 +1,10 @@
 import { GenericResponse } from '../../genericResponse';
-import HttpResponse from '../base';
+import { HttpResponse } from '../base';
 
-export class BaseHttpError extends Error implements HttpResponse<GenericResponse>{
+export class BaseHttpError
+    extends Error
+    implements HttpResponse<GenericResponse>
+{
     status: number;
     payload: any;
     constructor(message: string, status: number, error?: any) {
@@ -15,7 +18,7 @@ export class BaseHttpError extends Error implements HttpResponse<GenericResponse
         delete this.stack;
         return this;
     }
-};
+}
 
 export class Conflict409 extends BaseHttpError {
     constructor(message: string) {

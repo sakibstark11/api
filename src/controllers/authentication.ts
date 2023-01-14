@@ -1,22 +1,41 @@
 import { Logger } from 'pino';
-import HttpResponse from '../utils/types/responses/base';
-import { BaseHttpError, Server500, NotFound404, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
+import { HttpResponse } from '../utils/types/responses/base';
+import {
+    BaseHttpError,
+    Server500,
+    NotFound404,
+    Forbidden403,
+} from '../utils/types/responses/errors/httpErrors';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 import { TokenResponsePayload } from '../utils/types/token';
 import { GenericResponse } from '../utils/types/genericResponse';
-import { TypeRedisService, TypeTokenService, TypeUserService } from '../utils/types/services';
+import {
+    TypeRedisService,
+    TypeTokenService,
+    TypeUserService,
+} from '../utils/types/services';
 
-export default (redisService: TypeRedisService, userService: TypeUserService, tokenService: TypeTokenService, logger: Logger) => {
+export default (
+    redisService: TypeRedisService,
+    userService: TypeUserService,
+    tokenService: TypeTokenService,
+    logger: Logger,
+) => {
     return {
-        loginUser: async ({ email, password }: UnauthorizedUser): Promise<HttpResponse<BaseHttpError | TokenResponsePayload>> => {
+        loginUser: async ({
+            email,
+            password,
+        }: UnauthorizedUser): Promise<
+            HttpResponse<BaseHttpError | TokenResponsePayload>
+        > => {
             try {
                 const user = await userService.getUser(email);
                 if (!user) {
-                    throw new NotFound404(`user does not exist`);
+                    throw new NotFound404('user does not exist');
                 }
 
                 if (user.password !== password) {
-                    throw new Forbidden403(`email or password incorrect`);
+                    throw new Forbidden403('email or password incorrect');
                 }
 
                 const accessToken = tokenService.createAccessToken(user.id);
@@ -32,9 +51,10 @@ export default (redisService: TypeRedisService, userService: TypeUserService, to
                 }
                 return new Server500('something went wrong').removeStackTrace();
             }
-
         },
-        logoutUser: async (id: string): Promise<HttpResponse<BaseHttpError | GenericResponse>> => {
+        logoutUser: async (
+            id: string,
+        ): Promise<HttpResponse<BaseHttpError | GenericResponse>> => {
             try {
                 await redisService.removeRefreshToken(id);
 
@@ -47,7 +67,9 @@ export default (redisService: TypeRedisService, userService: TypeUserService, to
                 return new Server500('something went wrong').removeStackTrace();
             }
         },
-        refreshUser: async (id: string): Promise<HttpResponse<BaseHttpError | TokenResponsePayload>> => {
+        refreshUser: async (
+            id: string,
+        ): Promise<HttpResponse<BaseHttpError | TokenResponsePayload>> => {
             try {
                 await redisService.removeRefreshToken(id);
 
@@ -64,6 +86,6 @@ export default (redisService: TypeRedisService, userService: TypeUserService, to
                 }
                 return new Server500('something went wrong').removeStackTrace();
             }
-        }
+        },
     };
 };

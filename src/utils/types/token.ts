@@ -3,7 +3,7 @@ export type TokenResponsePayload = {
     refreshToken: string;
 };
 
-export type TokenConfig = { ttl: number, secret: string; };
+export type TokenConfig = { ttl: number; secret: string };
 
 export interface RequestObjectStructure {
     headers: {
@@ -12,6 +12,6 @@ export interface RequestObjectStructure {
     cookies: {
         refreshToken: string;
     };
-};
-export const TOKEN_EXPIRED = "TokenExpiredError";
-export type TokenExpiredError = "TokenExpiredError";
+}
+export const TOKEN_EXPIRED = 'TokenExpiredError';
+export type TokenExpiredError = 'TokenExpiredError';
