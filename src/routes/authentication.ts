@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { isPayloadHTTPError } from '../utils/typeGuard';
-import { Config } from '../utils/types/config';
 import { TypeAuthenticationController } from '../utils/types/controllers';
 import { HttpResponse } from '../utils/types/responses/base';
 import { BaseHttpError } from '../utils/types/responses/errors/httpErrors';
