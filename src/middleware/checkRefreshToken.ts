@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Logger } from 'pino';
-import RedisService from '../services/redis';
-import TokenService from '../services/token';
 import { EnteredUser } from '../utils/types/user/enteredUser';
-import { BaseHttpError, Server500, Forbidden403, Unauthorized401 } from '../utils/types/responses/errors/httpErrors';
+import { BaseHttpError, Server500, Forbidden403 } from '../utils/types/responses/errors/httpErrors';
 import { RequestObjectStructure } from '../utils/types/token';
 import { TypeRedisService, TypeTokenService } from '../utils/types/services';
 

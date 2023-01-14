@@ -2,7 +2,6 @@
 import express, { NextFunction } from 'express';
 import cookieParser from "cookie-parser";
 import { Config } from './utils/types/config';
-import ServiceMap from './utils/types/services';
 import UserRouter from './routes/user';
 import AuthenticationRouter from './routes/authentication';
 import { MiddlewareMap } from './utils/types/middlewares';
@@ -15,7 +14,7 @@ export default async ({ logger, port }: Config, { user, authentication }: Contro
     app.use(cookieParser());
 
     const userRouter = UserRouter(user, logger);
-    const authenticationRouter = AuthenticationRouter(authentication, authMiddleware as NextFunction, refreshToken as NextFunction, logger);
+    const authenticationRouter = AuthenticationRouter(authentication, authMiddleware as NextFunction, refreshToken as NextFunction);
 
     app.use("/user", userRouter);
     app.use("/login", authenticationRouter);

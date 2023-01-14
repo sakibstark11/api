@@ -1,18 +1,29 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { Logger } from 'pino';
 import { TypeAuthenticationController } from '../utils/types/controllers';
+import HttpResponse from '../utils/types/responses/base';
+import { BaseHttpError } from '../utils/types/responses/errors/httpErrors';
+import { TokenResponsePayload } from '../utils/types/token';
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 
 
 export default (controller: TypeAuthenticationController,
     authenticationMiddleware: NextFunction,
     refreshTokenMiddleware: NextFunction,
-    logger: Logger) => {
+) => {
     const router = Router();
 
+    const isPayloadHTTPError = (payload: any): payload is BaseHttpError => {
+        return 'error' in payload;
+    };
     router.post('/', async (req: Request, res: Response) => {
         const { email, password } = req.body as UnauthorizedUser;;
-        const { status, payload } = await controller.loginUser({ email, password });
+        const { status, payload } = await controller.loginUser({ email, password }) as HttpResponse<BaseHttpError | Partial<TokenResponsePayload>>;
+
+        if (!isPayloadHTTPError(payload)) {
+            res.cookie("refreshToken", payload.refreshToken);
+            delete payload.refreshToken;
+        }
+
         return res.status(status).json(payload);
     });
 

@@ -4,9 +4,6 @@ import { BaseHttpError, Server500, NotFound404, Forbidden403 } from '../utils/ty
 import { UnauthorizedUser } from '../utils/types/user/newUser';
 import { TokenResponsePayload } from '../utils/types/token';
 import { GenericResponse } from '../utils/types/genericResponse';
-import RedisService from '../services/redis';
-import UserService from '../services/user';
-import TokenService from '../services/token';
 import { TypeRedisService, TypeTokenService, TypeUserService } from '../utils/types/services';
 
 export default (redisService: TypeRedisService, userService: TypeUserService, tokenService: TypeTokenService, logger: Logger) => {
