@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { Logger } from 'pino';
-import userController from '../controllers/user';
 import { TypeUserController } from '../utils/types/controllers';
 import { NewUser } from '../utils/types/user/newUser';
 
