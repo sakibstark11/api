@@ -1,5 +1,7 @@
-import { BaseHttpError } from '../types/responses/errors/httpErrors';
+import { TokenResponsePayload } from '../types/token';
 
-export const isPayloadHTTPError = (payload: any): payload is BaseHttpError => {
-    return 'error' in payload;
+export const isTokenPayload = (
+    payload: any,
+): payload is Partial<TokenResponsePayload> => {
+    return 'refreshToken' in payload;
 };

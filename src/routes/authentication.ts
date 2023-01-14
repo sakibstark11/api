@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { isPayloadHTTPError } from '../utils/typeGuard';
+import { isTokenPayload } from '../utils/typeGuard';
 import { TypeAuthenticationController } from '../utils/types/controllers';
 import { HttpResponse } from '../utils/types/responses/base';
 import { BaseHttpError } from '../utils/types/responses/errors/httpErrors';
@@ -21,7 +21,7 @@ export default (
             password,
         })) as HttpResponse<BaseHttpError | Partial<TokenResponsePayload>>;
 
-        if (!isPayloadHTTPError(payload)) {
+        if (isTokenPayload(payload)) {
             res.cookie('refreshToken', payload.refreshToken, {
                 maxAge: refreshTokenTtl,
                 secure: true,
