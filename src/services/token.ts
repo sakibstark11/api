@@ -1,4 +1,4 @@
-import { sign, TokenExpiredError, verify } from "jsonwebtoken";
+import { sign, TokenExpiredError, verify } from 'jsonwebtoken';
 import { TokenConfig, TOKEN_EXPIRED } from '../utils/types/token';
 import { Logger } from 'pino';
 

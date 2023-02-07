@@ -61,11 +61,7 @@ const tokenService = TokenService(
     logger,
 );
 const userService = UserService(userRepository, logger);
-const redisService = RedisService(
-    redisRepository,
-    config.token.refresh.ttl,
-    logger,
-);
+const redisService = RedisService(redisRepository, config.token.refresh.ttl);
 
 const userController = UserController(userService, logger);
 const authenticationController = AuthenticationController(

@@ -15,7 +15,10 @@ export default async (
         },
     }: Config,
     { user, authentication }: Controllers,
-    { authentication: authMiddleware, refreshToken }: MiddlewareMap,
+    {
+        authentication: authMiddleware,
+        refreshToken: refreshTokenMiddleware,
+    }: MiddlewareMap,
 ) => {
     const app = express();
     app.use(express.json());
@@ -25,7 +28,7 @@ export default async (
     const authenticationRouter = AuthenticationRouter(
         authentication,
         authMiddleware as NextFunction,
-        refreshToken as NextFunction,
+        refreshTokenMiddleware as NextFunction,
         ttl,
     );
 
