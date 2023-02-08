@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import logger from './src/loggers/logger';
 import App from './src/app';
 import { Config } from './src/utils/types/config';

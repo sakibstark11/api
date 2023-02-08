@@ -47,7 +47,7 @@ services:
         ipv4_address: 172.20.128.2
 
   app:
-    command: npm run dev-app --prefix /app
+    command: npm start --prefix /app
     image: node:16
     container_name: Application
     volumes:
@@ -55,6 +55,7 @@ services:
     expose:
       - ${APP_PORT}
     environment:
+      - NODE_ENV=${NODE_ENV}
       - APP_PORT=${APP_PORT}
       - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
@@ -63,6 +64,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_HOST=172.20.128.5
       - DB_HOST=172.20.128.4
+      - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
       - ACCESS_TOKEN_TTL_SECONDS=${ACCESS_TOKEN_TTL_SECONDS}
       - REFRESH_TOKEN_SECRET=${REFRESH_TOKEN_SECRET}
       - REFRESH_TOKEN_TTL_SECONDS=${REFRESH_TOKEN_TTL_SECONDS}
