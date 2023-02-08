@@ -1,4 +1,4 @@
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
 import logger from './src/loggers/logger';
 import App from './src/app';
 import { Config } from './src/utils/types/config';
@@ -61,11 +61,7 @@ const tokenService = TokenService(
     logger,
 );
 const userService = UserService(userRepository, logger);
-const redisService = RedisService(
-    redisRepository,
-    config.token.refresh.ttl,
-    logger,
-);
+const redisService = RedisService(redisRepository, config.token.refresh.ttl);
 
 const userController = UserController(userService, logger);
 const authenticationController = AuthenticationController(

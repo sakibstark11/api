@@ -1,4 +1,4 @@
 export type MiddlewareMap = {
-    authentication: Function;
-    refreshToken: Function;
+    authentication: (...args: any[]) => void;
+    refreshToken: (...args: any[]) => void;
 };
